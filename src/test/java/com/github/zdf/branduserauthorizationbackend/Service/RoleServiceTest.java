@@ -16,7 +16,7 @@ public class RoleServiceTest extends BaseTest {
     private RoleService roleService;
 
     @Test
-    public void insertTest() {
+    public void insertAndDeleteTest() {
         List<Role> roleList = new ArrayList<>();
 
         Role role = new Role();
@@ -41,10 +41,7 @@ public class RoleServiceTest extends BaseTest {
         roleList.add(role3);
         roleService.saveAll(roleList);
         Assert.assertNotNull(roleService.getAll());
-    }
 
-    @Test
-    public void deleteTest() {
         roleService.deleteById("111");
         roleService.deleteById("222");
         roleService.deleteById("333");
@@ -54,4 +51,17 @@ public class RoleServiceTest extends BaseTest {
         Assert.assertNull(roleService.getById("333").orElse(null));
         Assert.assertNull(roleService.getById("444").orElse(null));
     }
+
+    @Test
+    public void getByRoleName() {
+        Role role = new Role();
+        role.setRoleId("111");
+        role.setRoleName(Constants.ROLE_SUPER_ADMIN);
+        roleService.save(role);
+//        System.out.println(roleService.getByRoleName("COMPANY"));
+        Assert.assertNotNull(roleService.getByRoleName("ADMIN"));
+        roleService.deleteById("111");
+        Assert.assertNull(roleService.getById("111").orElse(null));
+    }
+
 }

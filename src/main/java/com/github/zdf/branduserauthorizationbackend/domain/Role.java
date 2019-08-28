@@ -1,5 +1,6 @@
 package com.github.zdf.branduserauthorizationbackend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
@@ -22,6 +23,7 @@ public class Role implements GrantedAuthority {
     @ApiModelProperty("角色名")
     private String roleName;
 
+    @JsonIgnore
     @Override
     public String getAuthority() {
         return roleName;

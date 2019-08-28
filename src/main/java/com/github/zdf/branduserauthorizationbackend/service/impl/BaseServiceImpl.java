@@ -1,6 +1,6 @@
 package com.github.zdf.branduserauthorizationbackend.service.impl;
 
-import com.github.zdf.branduserauthorizationbackend.exception.EntityNotExitException;
+import com.github.zdf.branduserauthorizationbackend.exception.EntityNotExistException;
 import com.github.zdf.branduserauthorizationbackend.service.BaseService;
 import com.github.zdf.branduserauthorizationbackend.utils.UtilFunctions;
 import org.springframework.cache.annotation.CacheEvict;
@@ -46,7 +46,7 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
     @CachePut(key = "getTargetClass() + getMethodName() + #id")
     public T partialUpdate(ID id, T updateVal) {
         Optional<T> byId = getById(id);
-        T entity = byId.orElseThrow(() -> new EntityNotExitException("没有ID为" + id + "的实体"));
+        T entity = byId.orElseThrow(() -> new EntityNotExistException("没有ID为" + id + "的实体"));
         UtilFunctions.partialChange(entity, updateVal, null);
         // 检查ID是否被更改了
         if (!isIdOfEntity(id, entity)) {

@@ -1,6 +1,7 @@
 package com.github.zdf.branduserauthorizationbackend.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
@@ -23,7 +24,7 @@ public class User implements UserDetails {
      * 用户名
      */
     @ApiModelProperty("用户名")
-    private String userName;
+    private String username;
 
     /**
      * 用户密码
@@ -51,19 +52,6 @@ public class User implements UserDetails {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public Set<Role> getRoles() {
         return roles;
     }
@@ -80,20 +68,29 @@ public class User implements UserDetails {
         this.brandName = brandName;
     }
 
-
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+    public String getUsername() {
+        return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @JsonIgnore
     @Override
     public String getPassword() {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @JsonIgnore
     @Override
-    public String getUsername() {
-        return userName;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
     }
 
     @Override
@@ -120,8 +117,9 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", brandName='" + brandName + '\'' +
                 ", roles=" + roles +
                 '}';
     }
