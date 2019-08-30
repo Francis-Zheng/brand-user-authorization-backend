@@ -14,7 +14,7 @@ public interface BaseService<T, ID> {
      * @param val 新数据
      * @return 若插入成功，则返回原val。否则返回null
      */
-    T save(T val);
+//    T save(T val);
 
     /**
      * 部分更新实体。仅仅使用updateVal中非null的部分进行更新。
@@ -25,7 +25,7 @@ public interface BaseService<T, ID> {
      * @return 更新后的实体
      * @see
      */
-    T partialUpdate(ID id, T updateVal);
+//    T partialUpdate(ID id, T updateVal);
 
     /**
      * 保存所有的实体

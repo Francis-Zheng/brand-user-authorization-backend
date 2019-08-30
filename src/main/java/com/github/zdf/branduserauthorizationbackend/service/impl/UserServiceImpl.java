@@ -1,39 +1,94 @@
 package com.github.zdf.branduserauthorizationbackend.service.impl;
 
 import com.github.zdf.branduserauthorizationbackend.domain.User;
+import com.github.zdf.branduserauthorizationbackend.exception.EntityExistException;
+import com.github.zdf.branduserauthorizationbackend.exception.EntityNotExistException;
 import com.github.zdf.branduserauthorizationbackend.repository.UserRepository;
 import com.github.zdf.branduserauthorizationbackend.service.UserService;
-import org.springframework.data.domain.Example;
+import com.github.zdf.branduserauthorizationbackend.utils.UtilFunctions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Service("userService")
 public class UserServiceImpl extends BaseServiceImpl<User, String> implements UserService {
     private UserRepository userRepository;
 
-    protected UserServiceImpl(UserRepository repository) {
+    @Autowired
+    @Qualifier("passwordEncoder")
+    private PasswordEncoder passwordEncoder;
+
+    protected UserServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder) {
         super(repository);
         this.userRepository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
+    public User saveUnique(User user) throws EntityExistException {
+        if (userRepository.existsUserByUsername(user.getUsername())) {
+            throw new EntityExistException("已存在用户名为"+ user.getUsername()+ "的用户");
+        }else{
+            user.setPassword(passwordEncoder.encode(user.getPassword()));//对明文密码进行加密
+            return userRepository.save(user);
+        }
+    }
+
+    @Override
+    public User partialUpdate(String username, User updateVal) {
+        updateVal.setPassword(null);//不允许使用此接口更新密码
+        Optional<User> byUserName = Optional.ofNullable(getByUserName(username));
+        User entity = byUserName.orElseThrow(() -> new EntityNotExistException("没有username为" + username + "的实体"));
+        UtilFunctions.partialChange(entity, updateVal, null);
+//        // 检查ID是否被更改了
+//        if (!isIdOfEntity(username, entity)) {
+//            throw new IllegalArgumentException("不允许修改实体ID");
+//        }
+        return userRepository.save(entity);
+    }
+
+    @Override
+    public boolean changeUserPassword(String username, String oldPassword, String newPassword) {
+        if (username.isEmpty()) {
+            throw new BadCredentialsException("用户名不能为空");
+        }
+
+        User user = userRepository.findByUsername(username);
+        if(user == null){
+            throw new BadCredentialsException("未找到该用户"+username);
+        }
+
+        if (user.getPassword() != null) {
+            boolean match = passwordEncoder.matches(oldPassword == null ? "" : oldPassword, user.getPassword());
+            if (!match) {
+                throw new BadCredentialsException("用户名或密码错误");
+            }
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return true;
+    }
+
+
+    @Override
     public User getByUserName(String userName) {
-        User user = userRepository.findByUsername(userName);
-        if (user == null)
-            return null;
-        user.setPassword(null);
-        return user;
+        return userRepository.findByUsername(userName);
+
     }
 
     @Override
     public List<User> getByBrandName(String brandName) {
-        List<User> users = userRepository.findByBrandName(brandName);
-        if (users.isEmpty())
-            return null;
-        users.parallelStream().forEach(user -> user.setPassword(null));
-        return users;
+        return userRepository.findByBrandName(brandName);
     }
 
     @Override
@@ -52,36 +107,13 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
     }
 
     @Override
-    public Optional<User> getById(String s) {
-        Optional<User> users = userRepository.findById(s);
-        users.ifPresent(user -> user.setPassword(null));
-        return users;
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        if (userRepository.findByUsername(s) == null) {
+            throw new UsernameNotFoundException("没有用户名为" + s + "的用户");
+        } else {
+            return userRepository.findByUsername(s);
+        }
     }
 
-    @Override
-    public Iterable<User> getAllByExample(User example) {
-        Iterable<User> users = userRepository.findAll(Example.of(example));
-        if (users.iterator().hasNext()) {
-            users.forEach(user -> user.setPassword(null));
-            return users;
-        } else return null;
-    }
 
-    @Override
-    public Iterable<User> getAll() {
-        Iterable<User> users = userRepository.findAll();
-        if (users.iterator().hasNext()) {
-            users.forEach(user -> user.setPassword(null));
-            return users;
-        } else return null;
-    }
-
-    @Override
-    public Iterable<User> getAllById(Iterable<String> strings) {
-        Iterable<User> users = userRepository.findAllById(strings);
-        if (users.iterator().hasNext()) {
-            users.forEach(user -> user.setPassword(null));
-            return users;
-        } else return null;
-    }
 }

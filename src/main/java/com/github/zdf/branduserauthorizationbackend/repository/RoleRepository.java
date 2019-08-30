@@ -11,4 +11,6 @@ public interface RoleRepository extends MongoRepository<Role, String> {
     Role findByRoleName(String roleName);
 
     void deleteByRoleName(String roleName);
+
+    boolean existsRoleByRoleName(String roleName);
 }

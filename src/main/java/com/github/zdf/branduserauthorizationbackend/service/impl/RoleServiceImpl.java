@@ -20,6 +20,16 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, String> implements Ro
     }
 
     @Override
+    public Role saveUnique(Role role) {
+        if (roleRepository.existsRoleByRoleName(role.getRoleName())) {
+            role.setRoleId(roleRepository.findByRoleName(role.getRoleName()).getRoleId());
+            return roleRepository.save(role);
+        }else{
+            return roleRepository.save(role);
+        }
+    }
+
+    @Override
     public Role getByRoleName(String roleName) {
         return roleRepository.findByRoleName(roleName);
     }

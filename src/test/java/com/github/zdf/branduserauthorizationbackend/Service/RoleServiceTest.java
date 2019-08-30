@@ -57,7 +57,7 @@ public class RoleServiceTest extends BaseTest {
         Role role = new Role();
         role.setRoleId("111");
         role.setRoleName(Constants.ROLE_SUPER_ADMIN);
-        roleService.save(role);
+        roleService.saveUnique(role);
 //        System.out.println(roleService.getByRoleName("COMPANY"));
         Assert.assertNotNull(roleService.getByRoleName("ADMIN"));
         roleService.deleteById("111");
