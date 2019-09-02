@@ -7,9 +7,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @ApiModel(description = "用户")
@@ -92,7 +94,14 @@ public class User implements UserDetails {
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        Set<GrantedAuthority> authorities = new HashSet<>();
+//        authorities.add(new SimpleGrantedAuthority(roles.iterator().next().getAuthority()));
+        for(Role role : roles){
+            authorities.add(new SimpleGrantedAuthority(role.getAuthority()));
+        }
+
+        return authorities;
+//        return roles;
     }
 
     @JsonIgnore
