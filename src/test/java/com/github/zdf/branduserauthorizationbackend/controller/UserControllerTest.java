@@ -1,6 +1,7 @@
 package com.github.zdf.branduserauthorizationbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.zdf.branduserauthorizationbackend.BaseTest;
 import com.github.zdf.branduserauthorizationbackend.domain.Role;
@@ -106,8 +107,68 @@ public class UserControllerTest extends BaseTest {
         User userUpdate = new User();
         userUpdate.setBrandName("meidijituan");
 
+
         mockMvc.perform(MockMvcRequestBuilders.patch("/user/zheng").contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsBytes(userUpdate)))
+        .content(mapper.writeValueAsBytes(root1)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(mvcResult -> {
+                    String json = mvcResult.getResponse().getContentAsString();
+                    User updatedUser = mapper.readValue(json, User.class);
+                    Assert.assertEquals("meidijituan", updatedUser.getBrandName());
+
+                });
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/user/111"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void partialUpdateTest2() throws Exception{
+        ObjectMapper mapper = new ObjectMapper();
+
+        ObjectNode root1 = mapper.createObjectNode();
+        root1.put("userId", "111");
+        root1.put("username", "zheng");
+        root1.put("password", "123");
+        root1.put("brandName", "美的集团");
+
+        ObjectNode role1 = mapper.createObjectNode();
+        role1.put("roleId", "111");
+        role1.put("roleName", "admin");
+
+        ArrayNode roles = mapper.createArrayNode();
+        roles.add(role1);
+
+        root1.put("roles", roles);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/user")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(root1)).contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/get/zheng"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(mvcResult ->{
+                    User userOld = mapper.readValue(mvcResult.getResponse().getContentAsByteArray(), User.class);
+                    User userNew = mapper.readValue(root1.toString(), User.class);
+                    System.out.println("userOld: " + userOld.toString());
+                    System.out.println("userNew: " + userNew.toString());
+                    userOld.setRoles(userNew.getRoles());
+                    mockMvc.perform(MockMvcRequestBuilders.patch("/user/zheng").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(userOld)))
+                            .andDo(MockMvcResultHandlers.print())
+                            .andExpect(MockMvcResultMatchers.status().isOk());
+                });
+
+        User userUpdate = new User();
+        userUpdate.setBrandName("meidijituan");
+
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/user/zheng").contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(userUpdate)))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(mvcResult -> {
@@ -131,6 +192,22 @@ public class UserControllerTest extends BaseTest {
         root1.put("username", "haha");
         root1.put("password", "123");
         root1.put("brandName", "美的集团");
+
+        ObjectNode role1 = mapper.createObjectNode();
+        role1.put("roleId", "111");
+        role1.put("roleName", "ROLE_ZHENGDONGFA");
+
+        ObjectNode role2 = mapper.createObjectNode();
+        role2.put("roleId", "222");
+        role2.put("roleName", "ROLE_ADMIN");
+
+        ArrayNode roles = mapper.createArrayNode();
+        roles.add(role1);
+        roles.add(role2);
+
+        root1.put("roles", roles);
+
+        System.out.println(root1.toString());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/user")
                 .accept(MediaType.APPLICATION_JSON)

@@ -5,6 +5,7 @@ import com.github.zdf.branduserauthorizationbackend.service.UserService;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,9 @@ public class UserController extends BaseController<User, String> {
         this.userService = service;
     }
 
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")    等价
+//    @PreAuthorize("hasRole('ADMIN')")         等价
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @RequestMapping(value = "/get/{userName}", method = RequestMethod.GET)
     @ApiOperation(value = "根据用户名获取", httpMethod = "GET")
     @ApiResponses({
