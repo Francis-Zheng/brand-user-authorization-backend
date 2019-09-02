@@ -1,10 +1,7 @@
 package com.github.zdf.branduserauthorizationbackend.service.impl;
 
-import com.github.zdf.branduserauthorizationbackend.exception.EntityNotExistException;
 import com.github.zdf.branduserauthorizationbackend.service.BaseService;
-import com.github.zdf.branduserauthorizationbackend.utils.UtilFunctions;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -35,25 +32,6 @@ public abstract class BaseServiceImpl<T, ID> implements BaseService<T, ID> {
      * @return 实体的ID
      */
     public abstract ID getId(T entity);
-
-//    @Override
-//    @CachePut(key = "getTargetClass() + getMethodName() + getTarget().getId(#val)")
-//    public T save(T val) {
-//        return repository.save(val);
-//    }
-
-//    @Override
-//    @CachePut(key = "getTargetClass() + getMethodName() + #id")
-//    public T partialUpdate(ID id, T updateVal) {
-//        Optional<T> byId = getById(id);
-//        T entity = byId.orElseThrow(() -> new EntityNotExistException("没有ID为" + id + "的实体"));
-//        UtilFunctions.partialChange(entity, updateVal, null);
-//        // 检查ID是否被更改了
-//        if (!isIdOfEntity(id, entity)) {
-//            throw new IllegalArgumentException("不允许修改实体ID");
-//        }
-//        return save(entity);
-//    }
 
     @Override
     @CacheEvict(key = "getTargetClass() + getMethodName()", allEntries = true)

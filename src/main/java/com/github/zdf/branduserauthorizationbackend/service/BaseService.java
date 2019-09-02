@@ -1,32 +1,8 @@
 package com.github.zdf.branduserauthorizationbackend.service;
 
-import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 public interface BaseService<T, ID> {
-    /**
-     * 保存给定实体
-     * <p>
-     * 若实体是新的实体，没有之前的ID，则是插入新的实体，且返回的实体中包含新的ID。
-     * 若实体拥有ID，则更新数据库中对应的实体。
-     *
-     * @param val 新数据
-     * @return 若插入成功，则返回原val。否则返回null
-     */
-//    T save(T val);
-
-    /**
-     * 部分更新实体。仅仅使用updateVal中非null的部分进行更新。
-     * 更新使用<code>UtilFunctions.partialChange</code>函数，查看该文档了解详情
-     *
-     * @param id        ID
-     * @param updateVal 新的值
-     * @return 更新后的实体
-     * @see
-     */
-//    T partialUpdate(ID id, T updateVal);
-
     /**
      * 保存所有的实体
      *

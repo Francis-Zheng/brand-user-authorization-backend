@@ -109,7 +109,7 @@ public class UserControllerTest extends BaseTest {
 
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/user/zheng").contentType(MediaType.APPLICATION_JSON)
-        .content(mapper.writeValueAsBytes(root1)))
+        .content(mapper.writeValueAsBytes(userUpdate)))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(mvcResult -> {
@@ -130,7 +130,7 @@ public class UserControllerTest extends BaseTest {
 
         ObjectNode root1 = mapper.createObjectNode();
         root1.put("userId", "111");
-        root1.put("username", "zheng");
+        root1.put("username", "dong");
         root1.put("password", "123");
         root1.put("brandName", "美的集团");
 
@@ -150,7 +150,7 @@ public class UserControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/get/zheng"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/get/dong"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(mvcResult ->{
                     User userOld = mapper.readValue(mvcResult.getResponse().getContentAsByteArray(), User.class);
@@ -158,7 +158,7 @@ public class UserControllerTest extends BaseTest {
                     System.out.println("userOld: " + userOld.toString());
                     System.out.println("userNew: " + userNew.toString());
                     userOld.setRoles(userNew.getRoles());
-                    mockMvc.perform(MockMvcRequestBuilders.patch("/user/zheng").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(userOld)))
+                    mockMvc.perform(MockMvcRequestBuilders.patch("/user/dong").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(userOld)))
                             .andDo(MockMvcResultHandlers.print())
                             .andExpect(MockMvcResultMatchers.status().isOk());
                 });
@@ -167,7 +167,7 @@ public class UserControllerTest extends BaseTest {
         userUpdate.setBrandName("meidijituan");
 
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/user/zheng").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(MockMvcRequestBuilders.patch("/user/dong").contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsBytes(userUpdate)))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())

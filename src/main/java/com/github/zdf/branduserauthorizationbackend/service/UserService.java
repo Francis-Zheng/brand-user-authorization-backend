@@ -55,5 +55,12 @@ public interface UserService extends BaseService<User, String>, UserDetailsServi
      */
     User partialUpdate(String username, User newVal);
 
+    /**
+     * 更改用户密码
+     * @param username 用户名
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @return 成功返回true，失败返回false
+     */
     boolean changeUserPassword(String username, String oldPassword, String newPassword);
 }

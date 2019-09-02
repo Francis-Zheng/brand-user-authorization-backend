@@ -1,7 +1,6 @@
 package com.github.zdf.branduserauthorizationbackend.controller;
 
 import com.github.zdf.branduserauthorizationbackend.domain.Role;
-import com.github.zdf.branduserauthorizationbackend.domain.User;
 import com.github.zdf.branduserauthorizationbackend.service.RoleService;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;

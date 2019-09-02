@@ -6,8 +6,6 @@ import com.github.zdf.branduserauthorizationbackend.exception.EntityNotExistExce
 import com.github.zdf.branduserauthorizationbackend.repository.UserRepository;
 import com.github.zdf.branduserauthorizationbackend.service.UserService;
 import com.github.zdf.branduserauthorizationbackend.utils.UtilFunctions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -36,8 +34,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
     @Override
     public User saveUnique(User user) throws EntityExistException {
         if (userRepository.existsUserByUsername(user.getUsername())) {
-            throw new EntityExistException("已存在用户名为"+ user.getUsername()+ "的用户");
-        }else{
+            throw new EntityExistException("已存在用户名为" + user.getUsername() + "的用户");
+        } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));//对明文密码进行加密
             return userRepository.save(user);
         }
@@ -63,8 +61,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
         }
 
         User user = userRepository.findByUsername(username);
-        if(user == null){
-            throw new BadCredentialsException("未找到该用户"+username);
+        if (user == null) {
+            throw new BadCredentialsException("未找到该用户" + username);
         }
 
         if (user.getPassword() != null) {

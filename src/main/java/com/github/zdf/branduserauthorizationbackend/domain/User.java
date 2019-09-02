@@ -1,8 +1,8 @@
 package com.github.zdf.branduserauthorizationbackend.domain;
 
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
@@ -96,7 +96,7 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
 //        authorities.add(new SimpleGrantedAuthority(roles.iterator().next().getAuthority()));
-        for(Role role : roles){
+        for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(role.getAuthority()));
         }
 
@@ -130,7 +130,7 @@ public class User implements UserDetails {
 
     @Override
     public String toString() {
-        return "{" +
+        return "User{" +
                 "userId='" + userId + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +

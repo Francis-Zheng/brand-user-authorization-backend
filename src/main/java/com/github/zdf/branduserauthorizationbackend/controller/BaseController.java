@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -37,31 +35,6 @@ public abstract class BaseController<T, ID> {
         this.service = service;
         this.tClass = tClass;
     }
-
-//    @ApiOperation(value = "插入新的实体", httpMethod = "POST")
-//    @ApiResponses({
-//            @ApiResponse(code = 201, message = "创建成功")
-//    })
-//    @RequestMapping(value = "", method = RequestMethod.POST)
-//    public ResponseEntity<T> insert(@RequestBody @ApiParam(required = true, value = "新的实体") T entity) {
-//        return new ResponseEntity<>(service.save(entity), HttpStatus.CREATED);
-//    }
-
-//    @ApiOperation(value = "更新实体属性", httpMethod = "PUT")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "id", value = "实体ID", paramType = "path", required = true)
-//    })
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "更新成功")
-//    })
-//    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-//    public ResponseEntity<T> update(@RequestBody @ApiParam(value = "更新后的实体") T entity,
-//                                    @PathVariable("id") ID id) {
-//        if (!service.isIdOfEntity(id, entity)) {
-//            throw new IllegalArgumentException("ID错误");
-//        }
-//        return new ResponseEntity<>(service.save(entity), HttpStatus.OK);
-//    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "根据ID获取对应实体", httpMethod = "GET")
@@ -128,39 +101,14 @@ public abstract class BaseController<T, ID> {
     }
 
     @ApiOperation(value = "注销", httpMethod = "GET")
-    @RequestMapping(value="/logout", method = RequestMethod.GET)
-    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null){
+        if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
         return "redirect:/login";//You can redirect wherever you want, but generally it's a good practice to show login screen again.
     }
-
-
-//
-//    /**
-//     * 对于Map，则替换相同键的部分。对于数组或List
-//     * 则替换下标相同的部分，且将超长的部分加入到数组中。对于Set，则替换HashCode相同的部分。对于基本类型及其包装类，则
-//     * 替换值。其他的类型，则递归进入替换
-//     *
-//     * @param id        目标的Id
-//     * @param updateVal 值
-//     * @return 更新后的值
-//     */
-//    @ApiOperation(value = "部分更新，只更新提交的实体对象中不是Null的部分")
-//    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "id", required = true, paramType = "path")
-//    })
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "更新成功"),
-//            @ApiResponse(code = 400, message = "参数有误。请查看是否错误的修改了ID"),
-//            @ApiResponse(code = 404, message = "未找到实体。可能ID不正确"),
-//    })
-//    public ResponseEntity<T> partialUpdate(@PathVariable("id") ID id, @RequestBody T updateVal) {
-//        return new ResponseEntity<>(service.partialUpdate(id, updateVal), HttpStatus.OK);
-//    }
 
     @ExceptionHandler({IllegalArgumentException.class, MethodNotSupportException.class})
     public ResponseEntity<Exception> illegalArgument(IllegalArgumentException e) {
