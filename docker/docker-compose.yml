@@ -1,12 +1,12 @@
 version: '3'
 services:
-  mongo:
-    image: mongo:4.0
-    restart: always
   brand-user-authorization-backend:
     build: ./backend/
     ports:
       - 8081:8081
     restart: always
-    depends_on:
-      - mongo
+    environment:
+      ROLE_FILE: /data/role.json
+      USER_FILE: /data/user.json
+    volumes:
+      - ./backend/data:/data
