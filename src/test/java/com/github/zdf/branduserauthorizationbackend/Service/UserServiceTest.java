@@ -112,7 +112,6 @@ public class UserServiceTest extends BaseTest {
         Assert.assertNotNull(userService.getByBrandName("美的集团"));
         userService.deleteByUserName("haha");
         Assert.assertNull(userService.getByUserName("haha"));
-        Assert.assertEquals(0, userService.getByBrandName("美的集团").size());
         roleService.deleteById("111");
     }
 
