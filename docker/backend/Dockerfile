@@ -8,8 +8,8 @@ ADD entrypoint.sh /tmp
 COPY ./data /data
 
 RUN echo "正在安装mongodb" &&   \
-    apt-get update  &&  \
-    apt-get install mongodb -y
+    apt update  &&  \
+    apt install mongo-tools
 
 CMD bash /tmp/entrypoint.sh
 

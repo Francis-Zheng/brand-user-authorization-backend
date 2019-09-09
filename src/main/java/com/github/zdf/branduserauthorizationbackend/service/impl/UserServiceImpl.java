@@ -8,6 +8,7 @@ import com.github.zdf.branduserauthorizationbackend.service.UserService;
 import com.github.zdf.branduserauthorizationbackend.utils.UtilFunctions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,11 +22,10 @@ import java.util.Optional;
 public class UserServiceImpl extends BaseServiceImpl<User, String> implements UserService {
     private UserRepository userRepository;
 
-    @Autowired
-    @Qualifier("passwordEncoder")
     private PasswordEncoder passwordEncoder;
 
-    protected UserServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder) {
+    @Autowired  //使用@Lazy解决passwordEncoder与WebSecurityConfig存在的循环依赖问题
+    protected UserServiceImpl(UserRepository repository,@Lazy PasswordEncoder passwordEncoder) {
         super(repository);
         this.userRepository = repository;
         this.passwordEncoder = passwordEncoder;

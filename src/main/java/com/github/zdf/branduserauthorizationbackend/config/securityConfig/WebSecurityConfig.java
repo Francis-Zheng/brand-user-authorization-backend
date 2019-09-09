@@ -18,12 +18,12 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true) // 开启方法级别的权限控制，在需要权限控制的类上添加
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    @Qualifier("userService")
     private UserService userService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public WebSecurityConfig(UserService userService) {
+        this.userService = userService;
+    }
 
     @Bean(name = "passwordEncoder")
     public PasswordEncoder getPasswordEncoder() {
@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception{
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(userService).passwordEncoder(getPasswordEncoder());
     }
 
     @Override
